@@ -1,28 +1,5 @@
 # envmail
 
-This report sends puppet log messages to specific email addresses
-based on the environment.
-
-To use this report, you must create a `envmail.conf` file in the puppet
-$confdir.  This is a simple file that maps enviroments to email addresses.
-
-Lines in the `envmail.conf` file consist of an environment, a colon
-and a comma-separated list of email addresses.
-
-An example `envmail.conf`:
-
-    development: devs@domain.com
-    uat: uat@domain.com
-
-This will send all messages from the development environment to `devs@domain.com` etc.
-
-If you are using anti-spam controls such as grey-listing on your mail
-server, you should whitelist the sending email address (controlled by
-`reportfrom` configuration option) to ensure your email is not discarded as spam.
-
-
-# envmail
-
 #### Table of Contents
 
 1. [Overview](#overview)
