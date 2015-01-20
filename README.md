@@ -1,79 +1,72 @@
-# tagmail
+# envmail
+
+This report sends puppet log messages to specific email addresses
+based on the environment.
+
+To use this report, you must create a `envmail.conf` file in the puppet
+$confdir.  This is a simple file that maps enviroments to email addresses.
+
+Lines in the `envmail.conf` file consist of an environment, a colon
+and a comma-separated list of email addresses.
+
+An example `envmail.conf`:
+
+    development: devs@domain.com
+    uat: uat@domain.com
+
+This will send all messages from the development environment to `devs@domain.com` etc.
+
+If you are using anti-spam controls such as grey-listing on your mail
+server, you should whitelist the sending email address (controlled by
+`reportfrom` configuration option) to ensure your email is not discarded as spam.
+
+
+# envmail
 
 #### Table of Contents
 
 1. [Overview](#overview)
 2. [Module Description - What the module does and why it is useful](#module-description)
-3. [Setup - The basics of getting started with tagmail](#setup)
-    * [What tagmail affects](#what-tagmail-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with tagmail](#beginning-with-tagmail)
-4. [Usage - Configuration options and additional functionality](#usage)
-5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+3. [Installation and Usage](#installation-and-usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
-6. [Development - Guide for contributing to the module](#development)
 
 ## Overview
 
-A one-maybe-two sentence summary of what the module does/what problem it solves.
-This is your 30 second elevator pitch for your module. Consider including
-OS/Puppet version it works with.
+This is a plug-in puppet report processor to send report mail based on environment.
 
 ## Module Description
 
-If applicable, this section should have a brief description of the technology
-the module integrates with and what that integration enables. This section
-should answer the questions: "What does this module *do*?" and "Why would I use
-it?"
+This module is a [report processor](https://docs.puppetlabs.com/guides/reporting.html) plugin to generate a report similar to the built-in tagmail. The envmail report sends all log messages for a particular environment via email.
+The recipient email address is defined in a configuration file called `envmail.conf`.  To use the plugin, add `envmail` to the reports configuration in the [master] section of puppet.conf.
 
-If your module has a range of functionality (installation, configuration,
-management, etc.) this is the time to mention it.
+```
+[master]
+reports = puppetdb,console,tagmail,envmail
+```
 
-## Setup
+On the agent ensure pluginsync is enabled. It is enabled by default.
 
-### What tagmail affects
+```
+[agent]
+report = true
+pluginsync = true
+```
 
-* A list of files, packages, services, or operations that the module will alter,
-  impact, or execute on the system it's installed on.
-* This is a great place to stick any warnings.
-* Can be in list or paragraph form.
+## Installation and Usage
 
-### Setup Requirements **OPTIONAL**
+To use this report, you must create a `envmail.conf` file on the puppet master in the $confdir. The `envmail.conf` is a simple file that maps environments to email addresses:  Any log messages in the report that originate from the specified environment will be sent to the specified email addresses. 
 
-If your module requires anything extra before setting up (pluginsync enabled,
-etc.), mention it here.
+An example `envmail.conf`:
+```
+production: admins@domain.com
+development: devs@domain.com
+```
+If you are using anti-spam controls such as grey-listing on your mail server, you should whitelist the sending email address (controlled by `reportfrom` configuration option) to ensure your email is not discarded as spam.
+The tagmail.conf file contains a list of tags and email addresses separated by colons. Multiple tags and email addresses can be specified by separating them with commas.
 
-### Beginning with tagmail
-
-The very basic steps needed for a user to get the module up and running.
-
-If your most recent release breaks compatibility or requires particular steps
-for upgrading, you may wish to include an additional section here: Upgrading
-(For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
-
-## Usage
-
-Put the classes, types, and resources for customizing, configuring, and doing
-the fancy stuff with your module here.
+Other settings can also be optionally in puppet.conf to control the email notification settings: `smtpserver`, `smtpport`, `smtphelo`, `sendmail`.
 
 ## Reference
 
-Here, list the classes, types, providers, facts, etc contained in your module.
-This section should include all of the under-the-hood workings of your module so
-people know what the module is touching on their system but don't need to mess
-with things. (We are working on automating this section!)
-
-## Limitations
-
-This is where you list OS compatibility, version compatibility, etc.
-
-## Development
-
-Since your module is awesome, other users will want to play with it. Let them
-know what the ground rules for contributing are.
-
-## Release Notes/Contributors/Etc **Optional**
-
-If you aren't using changelog, put your release notes here (though you should
-consider using changelog). You may also add any additional sections you feel are
-necessary or important to include here. Please use the `## ` header.
+It is based on the original [tagmail report processor](https://github.com/puppetlabs/puppet/blob/3.7.3/lib/puppet/reports/tagmail.rb) which is a part of core puppet.
