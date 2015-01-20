@@ -33,11 +33,7 @@ Puppet::Reports.register_report(:envmail) do
       messages = nil
       if self.environment == environment
         messages = self.logs
-      end
 
-      if messages.nil?
-        Puppet.info "No messages to report"
-      else
         if messages.empty?
           Puppet.info "No messages to report to #{emails.join(",")}"
           next
